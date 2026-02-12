@@ -4,8 +4,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     TargetingTriangle targetingTriangle;
-    public UnityEngine.UI.Slider powerInput;
-    public List<GameObject> UIElementsToDisable = new List<GameObject>();
+    public GameObject powerInput;
+    public GameObject preFlightUI;
+    public GameObject flightUI;
 
     Rigidbody2D rb;
     public TMPro.TMP_Text altimeterText;
@@ -25,17 +26,15 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = targetingTriangle.transform.position - transform.position;
         direction.z = 0; // Ensure we're working in 2D plane
         direction.Normalize();
-        float power = powerInput.value;
+        float power = powerInput.GetComponent<PowerBar>().GetPower();
         // Use direction and power to launch player
         Debug.Log($"Direction: {direction}, Power: {power}");
         rb.AddForce(direction * power * powerMultiplier, ForceMode2D.Impulse);
 
         targetingTriangle.GetComponent<SpriteRenderer>().enabled = false;
         powerInput.gameObject.SetActive(false);
-        foreach (var uiElement in UIElementsToDisable)
-        {
-            uiElement.SetActive(false);
-        }
+        preFlightUI.SetActive(false);
+        flightUI.SetActive(true);
     }
 
     public void Update()
